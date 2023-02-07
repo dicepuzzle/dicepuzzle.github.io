@@ -1,2 +1,946 @@
 <h1>Dice Puzzle Page</h1>
-<p>This will soon be the home of more information than you ever wanted to know about the Atari 2600 game Dice Puzzle! Stay Tuned.</p>
+
+<p>Dice Puzzle is a game released in 1983 for the Atari 2600. It is a quite simple puzzle and is somewhat trivial to solve. It never became very popular and because of this there is very little information about it on the internet. The goal of this web page is to list as much information as possible about the puzzle, and be an interesting source of information.</p>
+
+<p>The rules of the game are quite simple. It consists of a 4x4 grid filled with dice. Each row, column and diagonal can be incremented by 1, rolling over to 1 if 6 is reached. The goal, according to the instruction manual, is to change all of the dice to 6. An example of a possible position is shown below.<br />
+<span style="font-family:Courier New,Courier,monospace">&nbsp;⎯⎯⎯⎯⎯⎯⎯<br />
+|5 4 4 4<br />
+|2 5 3 3<br />
+|1 2 4 2<br />
+|5 6 6 2</span></p>
+
+<p>There are 10 possible moves that can be made, however because they simply increment a certain portion of the board by 1, there is no movement of pieces, and the order of the moves does not matter. To describe sequences of moves, an array of lenth 10 will be used, with index 0 corresponding to the top-right diagonal, and moving counter-clockwise down the puzzle. Also, every dice, or piece in the puzzle will be labelled a through p, as shown below:</p>
+
+<p><span style="font-family:Courier New,Courier,monospace">5 4⎯3⎯2⎯1⎯0<br />
+6|a b c d<br />
+7|e f g h<br />
+8|i j k l<br />
+9|m n o p</span><br />
+<br />
+0 and 5 correspond to the diagonals, 1-4 the columns, and 6-9 the rows. The sequence of moves executed on the puzzle at this point would be reperesented as [A,B,C,D,E,F,G,H,I,J], mod 6, as executing a given move 6 times is equivalent to zero. The state of the puzzle itself can also be written mod 6, so long as 1 is subtracted from the value of each piece. The solution to the first puzzle listed can be written as [3 3 0 0 4 1 2 0 1 0].</p>
+
+<h3>Solution:</h3>
+
+<p>There are a couple of different ways the puzzle can be solved, however the one that I view as most efficient is listed below:</p>
+
+<p>z = (c+g+h-d)/2<br />
+solution = [z-g, c+g-(z+d), 0, c-b, c+g+h-(z+d+e), z+b - (f+c), 6-c, 6-z, 6-(i+z-e), 6-o]</p>
+
+<p>I will explain how this works later, but having the solution in such a linear way makes the solve much more straigtforward, making it faster to solve. I will elaborate on this later, however that is a very systematic way of doing things.</p>
+
+<p>Although according to the instruction manual, the goal is to set the puzzle to a state of all sixes, when playing the game this is incorrect. As long as all of the dice match, it will be considered solved regardless if they are all 6 or not. This will be mentioned further.</p>
+
+<h3><br />
+Quiet Patterns:</h3>
+
+<p>Like Lights Out, Dice Puzzle has several quiet patterns. Quiet patterns are sequences of moves which have no effect on the board. There are a total of 11 quiet patterns on the Dice Puzzle (12 if doing nothing is included), which are as follows:<br />
+[0111105555] [3411435225]<br />
+[0222204444] [3522534114]<br />
+[0333303333] [3033033003]<br />
+[0444402222] [3144132552]<br />
+[0555501111] [5150105023]<br />
+[3300330330]<br />
+<br />
+To find an optimal solution is trivial using quiet patterns. All that is needed to find an optimal solution is to find any solution, then apply each quiet pattern to the sequence to see if the total number of moves is reduced. The quiet patterns provide every possible sequence of moves to reach a given state.<br />
+This also allows for a simple calculation of the number of possible positions on the puzzle. There are 6^10 possible sequences of moves, dividing that by 12 quiet patterns gives 5038848 positions in the puzzle.</p>
+
+<p>When solving the puzzle relatively, as in actually playing the game, it is useful to consider positions that do not affect the relative state of the board. There are a total of 72 &#39;relative quiet patterns&#39; (RQPs) in Dice Puzzle (6 x 12). To find an optimal solution relatively, do the same as you would for absolute, just with the greater number of quiet patterns. I will list here all of the relative quiet patterns soon.</p>
+
+<h3><br />
+God&#39;s Number:</h3>
+
+<p><br />
+The number of positions after n moves are shown below, for both absolute (along the top) and relative (downward). God&#39;s number solving absolutely is 23, while relatively is 27. The average distance from solved for relative is 13.11606224, while for absolute is 16.71299511. data for other bases will be added soon!</p>
+
+<table align="right" border="0" cellpadding="0" cellspacing="0" dir="ltr">
+	<tbody>
+		<tr>
+			<td>&nbsp;</td>
+			<td>0</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+			<td style="width:1px">7</td>
+			<td style="width:77.2px">8</td>
+			<td>9</td>
+			<td>10</td>
+			<td>11</td>
+			<td>12</td>
+			<td>13</td>
+			<td>14</td>
+			<td>15</td>
+			<td>16</td>
+			<td>17</td>
+			<td>18</td>
+			<td>19</td>
+			<td>20</td>
+			<td>21</td>
+			<td>22</td>
+			<td>23</td>
+			<td>24</td>
+			<td>25</td>
+			<td>26</td>
+			<td>27</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>6</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>&nbsp;</td>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td>8</td>
+			<td>&nbsp;</td>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>2</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>60</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>55</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>55</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>67</td>
+			<td>&nbsp;</td>
+			<td>8</td>
+			<td>&nbsp;</td>
+			<td>55</td>
+			<td>&nbsp;</td>
+			<td>40</td>
+			<td>&nbsp;</td>
+			<td>47</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>3</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>330</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>220</td>
+			<td>&nbsp;</td>
+			<td>8</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">220</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>8</td>
+			<td>&nbsp;</td>
+			<td>316</td>
+			<td>&nbsp;</td>
+			<td>80</td>
+			<td>&nbsp;</td>
+			<td>212</td>
+			<td>&nbsp;</td>
+			<td>112</td>
+			<td>&nbsp;</td>
+			<td>140</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>4</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1320</td>
+		</tr>
+		<tr>
+			<td>4</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>713</td>
+			<td>&nbsp;</td>
+			<td>80</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">725</td>
+			<td>&nbsp;</td>
+			<td>80</td>
+			<td>&nbsp;</td>
+			<td>1101</td>
+			<td>&nbsp;</td>
+			<td>402</td>
+			<td>&nbsp;</td>
+			<td>633</td>
+			<td>&nbsp;</td>
+			<td>240</td>
+			<td>&nbsp;</td>
+			<td>299</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>5</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>4278</td>
+		</tr>
+		<tr>
+			<td>5</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1974</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">432</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>2094</td>
+			<td>&nbsp;</td>
+			<td>432</td>
+			<td>&nbsp;</td>
+			<td>3078</td>
+			<td>&nbsp;</td>
+			<td>1396</td>
+			<td>&nbsp;</td>
+			<td>1542</td>
+			<td>&nbsp;</td>
+			<td>432</td>
+			<td>&nbsp;</td>
+			<td>458</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>6</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>11844</td>
+		</tr>
+		<tr>
+			<td>6</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>4805</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">1656</td>
+			<td>&nbsp;</td>
+			<td>5433</td>
+			<td>&nbsp;</td>
+			<td>1637</td>
+			<td>&nbsp;</td>
+			<td>7265</td>
+			<td>&nbsp;</td>
+			<td>3567</td>
+			<td>&nbsp;</td>
+			<td>3156</td>
+			<td>&nbsp;</td>
+			<td>673</td>
+			<td>&nbsp;</td>
+			<td>598</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>4</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>28794</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">10468</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>5016</td>
+			<td>&nbsp;</td>
+			<td>12760</td>
+			<td>&nbsp;</td>
+			<td>4866</td>
+			<td>&nbsp;</td>
+			<td>14956</td>
+			<td>&nbsp;</td>
+			<td>7406</td>
+			<td>&nbsp;</td>
+			<td>5482</td>
+			<td>&nbsp;</td>
+			<td>842</td>
+			<td>&nbsp;</td>
+			<td>650</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>2</td>
+			<td>&nbsp;</td>
+			<td>62448</td>
+		</tr>
+		<tr>
+			<td>8</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">20647</td>
+			<td>&nbsp;</td>
+			<td>12712</td>
+			<td>&nbsp;</td>
+			<td>27183</td>
+			<td>&nbsp;</td>
+			<td>12037</td>
+			<td>&nbsp;</td>
+			<td>27119</td>
+			<td>&nbsp;</td>
+			<td>12905</td>
+			<td>&nbsp;</td>
+			<td>8022</td>
+			<td>&nbsp;</td>
+			<td>875</td>
+			<td>&nbsp;</td>
+			<td>618</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>122118</td>
+		</tr>
+		<tr>
+			<td>9</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>37138</td>
+			<td>&nbsp;</td>
+			<td>27976</td>
+			<td>&nbsp;</td>
+			<td>52642</td>
+			<td>&nbsp;</td>
+			<td>25358</td>
+			<td>&nbsp;</td>
+			<td>43582</td>
+			<td>&nbsp;</td>
+			<td>19194</td>
+			<td>&nbsp;</td>
+			<td>9792</td>
+			<td>&nbsp;</td>
+			<td>730</td>
+			<td>&nbsp;</td>
+			<td>452</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>216864</td>
+		</tr>
+		<tr>
+			<td>10</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>61101</td>
+			<td>&nbsp;</td>
+			<td>54560</td>
+			<td>&nbsp;</td>
+			<td>92529</td>
+			<td>&nbsp;</td>
+			<td>45663</td>
+			<td>&nbsp;</td>
+			<td>61709</td>
+			<td>&nbsp;</td>
+			<td>24037</td>
+			<td>&nbsp;</td>
+			<td>10034</td>
+			<td>&nbsp;</td>
+			<td>529</td>
+			<td>&nbsp;</td>
+			<td>232</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>350394</td>
+		</tr>
+		<tr>
+			<td>11</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>91664</td>
+			<td>&nbsp;</td>
+			<td>94336</td>
+			<td>&nbsp;</td>
+			<td>145792</td>
+			<td>&nbsp;</td>
+			<td>70524</td>
+			<td>&nbsp;</td>
+			<td>76036</td>
+			<td>&nbsp;</td>
+			<td>24824</td>
+			<td>&nbsp;</td>
+			<td>8496</td>
+			<td>&nbsp;</td>
+			<td>312</td>
+			<td>&nbsp;</td>
+			<td>68</td>
+			<td>&nbsp;</td>
+			<td>512052</td>
+		</tr>
+		<tr>
+			<td>12</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>124136</td>
+			<td>&nbsp;</td>
+			<td>142560</td>
+			<td>&nbsp;</td>
+			<td>201740</td>
+			<td>&nbsp;</td>
+			<td>92526</td>
+			<td>&nbsp;</td>
+			<td>79888</td>
+			<td>&nbsp;</td>
+			<td>20852</td>
+			<td>&nbsp;</td>
+			<td>5930</td>
+			<td>&nbsp;</td>
+			<td>144</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>667776</td>
+		</tr>
+		<tr>
+			<td>13</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>149400</td>
+			<td>&nbsp;</td>
+			<td>184504</td>
+			<td>&nbsp;</td>
+			<td>240700</td>
+			<td>&nbsp;</td>
+			<td>102024</td>
+			<td>&nbsp;</td>
+			<td>70068</td>
+			<td>&nbsp;</td>
+			<td>13912</td>
+			<td>&nbsp;</td>
+			<td>3188</td>
+			<td>&nbsp;</td>
+			<td>40</td>
+			<td>&nbsp;</td>
+			<td>763836</td>
+		</tr>
+		<tr>
+			<td>14</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>156952</td>
+			<td>&nbsp;</td>
+			<td>200832</td>
+			<td>&nbsp;</td>
+			<td>243744</td>
+			<td>&nbsp;</td>
+			<td>92936</td>
+			<td>&nbsp;</td>
+			<td>50288</td>
+			<td>&nbsp;</td>
+			<td>7376</td>
+			<td>&nbsp;</td>
+			<td>1232</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>753360</td>
+		</tr>
+		<tr>
+			<td>15</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>141464</td>
+			<td>&nbsp;</td>
+			<td>181552</td>
+			<td>&nbsp;</td>
+			<td>207512</td>
+			<td>&nbsp;</td>
+			<td>68752</td>
+			<td>&nbsp;</td>
+			<td>28920</td>
+			<td>&nbsp;</td>
+			<td>2960</td>
+			<td>&nbsp;</td>
+			<td>256</td>
+			<td>&nbsp;</td>
+			<td>631416</td>
+		</tr>
+		<tr>
+			<td>16</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>107808</td>
+			<td>&nbsp;</td>
+			<td>135112</td>
+			<td>&nbsp;</td>
+			<td>147376</td>
+			<td>&nbsp;</td>
+			<td>40464</td>
+			<td>&nbsp;</td>
+			<td>13160</td>
+			<td>&nbsp;</td>
+			<td>896</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>444816</td>
+		</tr>
+		<tr>
+			<td>17</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>68680</td>
+			<td>&nbsp;</td>
+			<td>82640</td>
+			<td>&nbsp;</td>
+			<td>87080</td>
+			<td>&nbsp;</td>
+			<td>18544</td>
+			<td>&nbsp;</td>
+			<td>4584</td>
+			<td>&nbsp;</td>
+			<td>144</td>
+			<td>&nbsp;</td>
+			<td>261672</td>
+		</tr>
+		<tr>
+			<td>18</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>36336</td>
+			<td>&nbsp;</td>
+			<td>41616</td>
+			<td>&nbsp;</td>
+			<td>42816</td>
+			<td>&nbsp;</td>
+			<td>6480</td>
+			<td>&nbsp;</td>
+			<td>1200</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>128448</td>
+		</tr>
+		<tr>
+			<td>19</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>15912</td>
+			<td>&nbsp;</td>
+			<td>17440</td>
+			<td>&nbsp;</td>
+			<td>17608</td>
+			<td>&nbsp;</td>
+			<td>1696</td>
+			<td>&nbsp;</td>
+			<td>168</td>
+			<td>&nbsp;</td>
+			<td>52824</td>
+		</tr>
+		<tr>
+			<td>20</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>5728</td>
+			<td>&nbsp;</td>
+			<td>6048</td>
+			<td>&nbsp;</td>
+			<td>6048</td>
+			<td>&nbsp;</td>
+			<td>320</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>18144</td>
+		</tr>
+		<tr>
+			<td>21</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>1632</td>
+			<td>&nbsp;</td>
+			<td>1664</td>
+			<td>&nbsp;</td>
+			<td>1664</td>
+			<td>&nbsp;</td>
+			<td>32</td>
+			<td>&nbsp;</td>
+			<td>4992</td>
+		</tr>
+		<tr>
+			<td>22</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>320</td>
+			<td>&nbsp;</td>
+			<td>320</td>
+			<td>&nbsp;</td>
+			<td>320</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>960</td>
+		</tr>
+		<tr>
+			<td>23</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td style="width:1px">&nbsp;</td>
+			<td style="width:77.2px">&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>32</td>
+			<td>&nbsp;</td>
+			<td>32</td>
+			<td>&nbsp;</td>
+			<td>32</td>
+			<td>&nbsp;</td>
+			<td>96</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>1</td>
+			<td>10</td>
+			<td>55</td>
+			<td>220</td>
+			<td>714</td>
+			<td>1992</td>
+			<td>4940</td>
+			<td style="width:1px">11120</td>
+			<td style="width:77.2px">23029</td>
+			<td>44266</td>
+			<td>79393</td>
+			<td>133148</td>
+			<td>208626</td>
+			<td>304412</td>
+			<td>411800</td>
+			<td>513690</td>
+			<td>587403</td>
+			<td>614108</td>
+			<td>585775</td>
+			<td>509372</td>
+			<td>400576</td>
+			<td>280890</td>
+			<td>172298</td>
+			<td>90560</td>
+			<td>40466</td>
+			<td>14894</td>
+			<td>4348</td>
+			<td>742</td>
+			<td>&nbsp;</td>
+			<td>5038848</td>
+		</tr>
+	</tbody>
+</table>
+
+<p><br />
+&nbsp;</p>
+
+<p><br />
+Extensions:</p>
+
+<p>There are many ways the dice puzzle can be extended, some ideas are listed below:<br />
+- As mentioned before, using bases other than 6 is an interesting way to extend the puzzle. Essentially the same methods as base 6 can be used on any other base, however it should be noted that odd bases will have half as many quiet patterns, and therefore twice as many positions relative to the base. I have no proof for this, but I believe even bases above 6 also have only 2b quiet patterns, and odd bases b quiet patterns. The number of RQPs is simply that multiplied by the base again. I may be wrong, please feel free to verify. I will soon add an entire section dedicated to other bases, when I find more time.<br />
+- Different board sizes could be used. Because of the diagonals it might only make sense to use squares, however it could possibly be altered to accomodate that. I have not explored this possibility at all, however the only major difference I can forsee is the middle square on odd bases being interesting. I will definitely explore the 3x3, and maybe the 5x5 board soon.<br />
+- Perhaps adding an increment to puzzles like Cary Huang&#39;s loopover would be interesting. I am not sure what affect this would have, however it would make it more analogous to a Rubik&#39;s cube, with the increment acting as orientations. I have no idea how this would actually work, it is just an interesting idea.<br />
+- There are an infinite number of similar puzzles that could be created by simply using an array of some length, and an arbitrary number of operations that increment certain positions in the array by a certain amount, mod some number. Lights Out would be considered in this very loose definition. I have no idea what the implications of this would be, but it is an interesting thought.</p>
+
+<p>&nbsp;</p>
+
+<h3><br />
+Instruction Manual Text:</h3>
+
+<p><br />
+DICE PUZZLE</p>
+
+<p>The dice puzzle has 16 squares of random numbers between 1-6. The object is to change all the numbers to 6 in the shortest amount of time, using the fewest numbers of turns.</p>
+
+<p>When the power is turned on, each square will have the number 1. After pushing the reset button, all the dice change to random numbers. (The game is guaranteed to be solvable every time.) There is a small square that moves outside of the left side and over the top by using the joystick. When the fire button is pushed, all the numbers in the row next to the square increase by one. The numbers can also be changed diagonally. Every 5 minutes a warning will sound, up to a maximum time limit of 60 minutes. When all the dice are changed to 6, the game will automatically end displaying time used and number of turns taken.</p>
+
+<p>The dice puzzle - sometimes mind boggling, sometimes a cinch, is always loads of fun. Come and match wits with the computer.</p>
+
+<h3>About:</h3>
+
+<p>This page is made by a high school student from Nova Scotia, Canada who loves Dice Puzzle</p>
